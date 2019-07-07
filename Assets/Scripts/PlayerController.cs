@@ -10,11 +10,13 @@ public class PlayerController : MonoBehaviour
     public Text countText;
     public Text winText;
     public Text pickupText;
+    public Text livesText;
 
     private Rigidbody rb;
     private int scoreCount;
     private int pickupCount;
     private int yellowCount;
+    private int lives;
     public Transform playerLocation;
 
     void Start ()
@@ -24,6 +26,7 @@ public class PlayerController : MonoBehaviour
         scoreCount = 0;
         pickupCount = 0;
         yellowCount = 0;
+        lives = 3;
         SetCountText ();
         winText.text = "";
     }
@@ -38,15 +41,23 @@ public class PlayerController : MonoBehaviour
         rb.AddForce (movement * speed);
     }
 
-     void Update() {
+     void Update() 
+    {
     
-    if (Input.GetKey("escape"))
-     Application.Quit();    
-    
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }    
     }
 
         void OnTriggerEnter(Collider other) 
     {
+        if (lives == 1 && other.gameObject.CompareTag("Enemy"))
+        {
+            Destroy(gameObject);
+            lossDisplay();
+
+        }
         if (other.gameObject.CompareTag ("Pick Up"))
         {
             other.gameObject.SetActive (false);
@@ -60,6 +71,8 @@ public class PlayerController : MonoBehaviour
             other.gameObject.SetActive (false);
             scoreCount = scoreCount -1 ;
             pickupCount = pickupCount + 1;
+            lives = lives - 1;
+
             SetCountText ();
         }
     }
@@ -68,7 +81,7 @@ public class PlayerController : MonoBehaviour
     {
         countText.text = "Score: " + scoreCount.ToString ();
         pickupText.text = "Pickups Acquired: " + pickupCount.ToString();
-        
+        livesText.text = "Lives Remaining: " + lives.ToString();
         if (yellowCount == 12)
         {
             StartCoroutine(moveDelay(3f));
@@ -79,17 +92,11 @@ public class PlayerController : MonoBehaviour
         }
         else if (yellowCount ==20 && pickupCount >20)
         {
-            countText.text = "";
-            pickupText.text = "";
-            winText.text = "You Lost!";
-            rb.constraints = RigidbodyConstraints.FreezeAll;
+            lossDisplay();
         }
         else if (yellowCount == 20 && pickupCount == 20)
         {
-            countText.text = "";
-            pickupText.text = "";
-            winText.text = "You Won!";
-            rb.constraints = RigidbodyConstraints.FreezeAll;
+            winDisplay();
         }
     }
     void disableText ()
@@ -107,6 +114,23 @@ public class PlayerController : MonoBehaviour
         rb.constraints = RigidbodyConstraints.None;
     }
 
+    void winDisplay()
+    {
+        countText.text = "";
+        pickupText.text = "";
+        livesText.text = "";
+        winText.text = "You Won!";
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+    }
+    void lossDisplay()
+    {
+        countText.text = "";
+        pickupText.text = "";
+        livesText.text = "";
+        winText.text = "You Won!";
+        winText.text = "You Lost!";
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+    }
      IEnumerator moveDelay(float time)
     {
          yield return new WaitForSeconds(time);
