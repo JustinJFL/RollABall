@@ -39,12 +39,17 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
 
         rb.AddForce (movement * speed);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }        
     }
 
      void Update() 
     {
     
-        if (Input.GetKey("escape"))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }    
@@ -127,7 +132,6 @@ public class PlayerController : MonoBehaviour
         countText.text = "";
         pickupText.text = "";
         livesText.text = "";
-        winText.text = "You Won!";
         winText.text = "You Lost!";
         rb.constraints = RigidbodyConstraints.FreezeAll;
     }
