@@ -31,6 +31,13 @@ public class PlayerController : MonoBehaviour
         rb.AddForce (movement * speed);
     }
 
+     void Update() {
+    
+    if (Input.GetKey("escape"))
+     Application.Quit();    
+    
+    }
+
         void OnTriggerEnter(Collider other) 
     {
         if (other.gameObject.CompareTag ("Pick Up"))
@@ -43,11 +50,11 @@ public class PlayerController : MonoBehaviour
     
     void SetCountText ()
     {
-        countText.text = "Count: " + count.ToString ();
+        countText.text = "Score: " + count.ToString ();
         if (count >= 12)
         {
             countText.text = "";
-            winText.text = "You Win!";
+            winText.text = "You Lost! (jk)";
         }
     }
 }
