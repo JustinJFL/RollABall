@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     private int pickupCount;
     private int yellowCount;
     private int lives;
+
+    private bool lvl2;
     public Transform playerLocation;
 
     void Start ()
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
         lives = 3;
         SetCountText ();
         winText.text = "";
+        lvl2 = false;
     }
 
     void FixedUpdate ()
@@ -46,18 +49,9 @@ public class PlayerController : MonoBehaviour
         }        
     }
 
-     void Update() 
-    {
-    
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Application.Quit();
-        }    
-    }
-
         void OnTriggerEnter(Collider other) 
     {
-        if (lives == 1 && other.gameObject.CompareTag("Enemy"))
+        if ((lives == 1 || lives == 0) && other.gameObject.CompareTag("Enemy"))
         {
             Destroy(gameObject);
             lossDisplay();
@@ -77,7 +71,6 @@ public class PlayerController : MonoBehaviour
             scoreCount = scoreCount -1 ;
             pickupCount = pickupCount + 1;
             lives = lives - 1;
-
             SetCountText ();
         }
     }
@@ -87,7 +80,7 @@ public class PlayerController : MonoBehaviour
         countText.text = "Score: " + scoreCount.ToString ();
         pickupText.text = "Pickups Acquired: " + pickupCount.ToString();
         livesText.text = "Lives Remaining: " + lives.ToString();
-        if (yellowCount == 12)
+        if (yellowCount == 12 && lvl2 ==false)
         {
             StartCoroutine(moveDelay(3f));
             winText.text = "Level 1 Complete.";
@@ -99,9 +92,17 @@ public class PlayerController : MonoBehaviour
         {
             lossDisplay();
         }
+        else if(lives == 0)
+            {
+                lossDisplay();
+            }
         else if (yellowCount == 20 && pickupCount == 20)
         {
             winDisplay();
+        }
+        else
+        {
+            winText.text = "";
         }
     }
     void disableText ()
@@ -112,6 +113,7 @@ public class PlayerController : MonoBehaviour
     void movePlayer()
     {
         playerLocation.position = new Vector3(120.0f,2.5f,0);
+        lvl2 = true;
     }
 
     void restorePlayer()
